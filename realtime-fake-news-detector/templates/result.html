@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - Fake News Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/" class="flex items-center">
+                            <i class="fas fa-newspaper text-blue-600 text-2xl mr-2"></i>
+                            <span class="text-xl font-bold text-gray-800">Fake News Detector</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Result Card -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Result Header -->
+            <div class="p-6 {% if prediction.label == 'REAL' %}bg-green-50{% else %}bg-red-50{% endif %}">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        {% if prediction.label == 'REAL' %}
+                            <i class="fas fa-check-circle text-green-500 text-3xl"></i>
+                        {% else %}
+                            <i class="fas fa-exclamation-triangle text-red-500 text-3xl"></i>
+                        {% endif %}
+                    </div>
+                    <div class="ml-4">
+                        <h2 class="text-2xl font-bold {% if prediction.label == 'REAL' %}text-green-700{% else %}text-red-700{% endif %}">
+                            {{ prediction.label }} NEWS
+                        </h2>
+                        <p class="text-gray-600">Confidence Score: {{ prediction.confidence }}%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Details -->
+            <div class="p-6">
+                <!-- Original Text -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Analyzed Text</h3>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-gray-700">{{ original_text }}</p>
+                    </div>
+                </div>
+
+                <!-- Key Features -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Key Features Detected</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for feature in prediction.features %}
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {{ feature[0] }}
+                            <span class="ml-2 text-blue-600">({{ "%.2f"|format(feature[1]) }})</span>
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Text Characteristics -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Text Characteristics</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {% for key, value in characteristics.items() %}
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="text-sm font-medium text-gray-500 uppercase">{{ key|replace('_', ' ') }}</h4>
+                            <p class="mt-1 text-2xl font-semibold text-gray-900">{{ value }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- User Feedback -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Was this analysis helpful?</h3>
+                    <div class="flex space-x-4">
+                        <button onclick="submitFeedback(true)" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                            <i class="fas fa-thumbs-up mr-2"></i>Yes
+                        </button>
+                        <button onclick="submitFeedback(false)" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                            <i class="fas fa-thumbs-down mr-2"></i>No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-6 flex justify-center">
+            <a href="/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Analyze Another Article
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function submitFeedback(isHelpful) {
+            fetch('/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: '{{ original_text|tojson|safe }}',
+                    label: isHelpful ? '{{ prediction.label }}' === 'REAL' ? 0 : 1 : '{{ prediction.label }}' === 'REAL' ? 1 : 0
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Thank you for your feedback!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to submit feedback. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
