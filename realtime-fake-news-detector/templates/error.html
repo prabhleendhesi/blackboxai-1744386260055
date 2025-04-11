@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Fake News Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/" class="flex items-center">
+                            <i class="fas fa-newspaper text-blue-600 text-2xl mr-2"></i>
+                            <span class="text-xl font-bold text-gray-800">Fake News Detector</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 text-center">
+            <!-- Error Icon -->
+            <div class="mx-auto w-24 h-24 rounded-full bg-red-100 flex items-center justify-center">
+                <i class="fas fa-exclamation-circle text-red-500 text-4xl"></i>
+            </div>
+
+            <!-- Error Message -->
+            <div>
+                <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+                    Oops! Something went wrong
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    {{ error }}
+                </p>
+            </div>
+
+            <!-- Error Details (if available) -->
+            {% if error_details %}
+            <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">
+                            Error Details
+                        </h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <p>{{ error_details }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Suggestions -->
+            <div class="rounded-md bg-gray-50 p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-lightbulb text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-gray-800">
+                            Suggestions
+                        </h3>
+                        <div class="mt-2 text-sm text-gray-600">
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Refresh the page and try again</li>
+                                <li>Check your internet connection</li>
+                                <li>Try clearing your browser cache</li>
+                                <li>If the problem persists, please try again later</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="mt-6">
+                <a href="/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="fas fa-home mr-2"></i>
+                    Return to Home
+                </a>
+            </div>
+
+            <!-- Support Contact -->
+            <div class="mt-6 text-sm text-gray-500">
+                Need help? Contact support at 
+                <a href="mailto:support@fakenewsdetector.com" class="text-blue-600 hover:text-blue-800">
+                    support@fakenewsdetector.com
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-inner mt-8">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-gray-500">
+                © 2023 Fake News Detector. All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
